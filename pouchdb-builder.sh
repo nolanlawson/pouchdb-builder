@@ -1,9 +1,17 @@
 #!/bin/bash
-# build up every pouch build from now until the given commit
+# Build up every PouchDB from now back to the given commit,
+# then upload the results to CouchDB.
 #
+# usage:
+# COUCHDB_URL=http://mysite.com:5984/mydb ./pouchdb-builder.sh
 #
-OLDEST_COMMIT=a31c92865922b8436bd8479464d7a611c0c6683d
-#OLDEST_COMMIT=bc5b1034f7ea12b2ebd674bdf86bb5ca9c23dc59
+# You can also specify OLDEST_COMMIT=hash to go back further.
+# Default is to a commit in late 2013.
+#
+if [ -z $OLDEST_COMMIT ]; then
+  OLDEST_COMMIT=a31c92865922b8436bd8479464d7a611c0c6683d
+fi
+
 if [ -z $COUCHDB_URL ]; then
   COUCHDB_URL=http://localhost:5984/pouchdb_builds
 fi
