@@ -6,10 +6,11 @@
 # COUCHDB_URL=http://mysite.com:5984/mydb ./pouchdb-builder.sh
 #
 # You can also specify OLDEST_COMMIT=hash to go back further.
-# Default is to a commit in late 2013.
+# Default is to a commit in mid-2014.
 #
 if [ -z $OLDEST_COMMIT ]; then
-  OLDEST_COMMIT=a31c92865922b8436bd8479464d7a611c0c6683d
+  # commit where we renamed pouchdb-nightly.js to pouchdb.js
+  OLDEST_COMMIT=9c867a985afd7f1e7323102f3dfc6fd74c4fa770
 fi
 
 if [ -z $COUCHDB_URL ]; then
@@ -42,7 +43,9 @@ while [[ $(git rev-parse HEAD) != $OLDEST_COMMIT ]]; do
     echo "response is $response"
     rev=$(echo $response | egrep -Eo 'rev":"(\S+)"' | sed 's/rev":"//' | sed 's/"$//')
     echo "rev is $rev"
-    curl -X PUT "$COUCHDB_URL/$commit/pouchdb.min.js?rev=$rev" -H "content-type:application/javascript" -d @dist/pouchdb-nightly.min.js    
+    response=$(curl -X PUT "$COUCHDB_URL/$commit/pouchdb.min.js?rev=$rev" -H "content-type:application/javascript" -d @dist/pouchdb.min.js)
+    rev=$(echo $response | egrep -Eo 'rev":"(\S+)"' | sed 's/rev":"//' | sed 's/"$//')
+    curl -X PUT "$COUCHDB_URL/$commit/pouchdb.js?rev=$rev" -H "content-type:application/javascript" -d @dist/pouchdb.js
   fi
   git reset --hard HEAD^1
   
