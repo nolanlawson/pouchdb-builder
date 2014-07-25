@@ -43,9 +43,9 @@ while [[ $(git rev-parse HEAD) != $OLDEST_COMMIT ]]; do
     echo "response is $response"
     rev=$(echo $response | egrep -Eo 'rev":"(\S+)"' | sed 's/rev":"//' | sed 's/"$//')
     echo "rev is $rev"
-    response=$(curl -X PUT "$COUCHDB_URL/$commit/pouchdb.min.js?rev=$rev" -H "content-type:application/javascript" -d @dist/pouchdb.min.js)
+    response=$(curl -X PUT "$COUCHDB_URL/$commit/pouchdb.min.js?rev=$rev" -H "content-type:application/javascript" --data-binary @dist/pouchdb.min.js)
     rev=$(echo $response | egrep -Eo 'rev":"(\S+)"' | sed 's/rev":"//' | sed 's/"$//')
-    curl -X PUT "$COUCHDB_URL/$commit/pouchdb.js?rev=$rev" -H "content-type:application/javascript" -d @dist/pouchdb.js
+    curl -X PUT "$COUCHDB_URL/$commit/pouchdb.js?rev=$rev" -H "content-type:application/javascript" --data-binary @dist/pouchdb.js
   fi
   git reset --hard HEAD^1
   
