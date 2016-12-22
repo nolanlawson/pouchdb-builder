@@ -21,7 +21,7 @@ curl -X PUT $COUCHDB_URL
 
 if [[ ! -d pouchdb ]]; then
   mkdir -p pouchdb
-  git clone https://github.com/pouchdb/pouchdb.git --single-branch --branch master
+  git clone https://github.com/pouchdb/pouchdb.git
 fi
 
 cd pouchdb
