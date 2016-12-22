@@ -9,8 +9,8 @@
 # Default is to a commit in mid-2014.
 #
 if [ -z $OLDEST_COMMIT ]; then
-  # commit where we renamed pouchdb-nightly.js to pouchdb.js
-  OLDEST_COMMIT=9c867a985afd7f1e7323102f3dfc6fd74c4fa770
+  # commit for build 6.0.5
+  OLDEST_COMMIT=0a7e9dc04850aa4f48208ab232f37b4a08a2476a
 fi
 
 if [ -z $COUCHDB_URL ]; then
@@ -21,7 +21,7 @@ curl -X PUT $COUCHDB_URL
 
 if [[ ! -d pouchdb ]]; then
   mkdir -p pouchdb
-  git clone https://github.com/pouchdb/pouchdb.git
+  git clone https://github.com/pouchdb/pouchdb.git --single-branch --branch master
 fi
 
 cd pouchdb
@@ -43,9 +43,9 @@ while [[ $(git rev-parse HEAD) != $OLDEST_COMMIT ]]; do
     echo "response is $response"
     rev=$(echo $response | egrep -Eo 'rev":"(\S+)"' | sed 's/rev":"//' | sed 's/"$//')
     echo "rev is $rev"
-    response=$(curl -X PUT "$COUCHDB_URL/$commit/pouchdb.min.js?rev=$rev" -H "content-type:application/javascript" --data-binary @dist/pouchdb.min.js)
+    response=$(curl -X PUT "$COUCHDB_URL/$commit/pouchdb.min.js?rev=$rev" -H "content-type:application/javascript" --data-binary @packages/node_modules/pouchdb/dist/pouchdb.min.js)
     rev=$(echo $response | egrep -Eo 'rev":"(\S+)"' | sed 's/rev":"//' | sed 's/"$//')
-    curl -X PUT "$COUCHDB_URL/$commit/pouchdb.js?rev=$rev" -H "content-type:application/javascript" --data-binary @dist/pouchdb.js
+    curl -X PUT "$COUCHDB_URL/$commit/pouchdb.js?rev=$rev" -H "content-type:application/javascript" --data-binary @packages/node_modules/pouchdb/dist/pouchdb.js
   fi
   git reset --hard HEAD^1
   
